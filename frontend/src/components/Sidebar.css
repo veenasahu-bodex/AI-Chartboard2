@@ -1,0 +1,381 @@
+.sidebar {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #0d121c;
+
+  border-right: 1px solid #202938;
+
+  color: #e5e7eb;
+
+  overflow: hidden;
+}
+
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.sidebar-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 20px 18px;
+}
+
+
+.nova-logo-image {
+  width: 42px;
+  height: 42px;
+
+  object-fit: contain;
+
+  border-radius: 10px;
+
+  flex-shrink: 0;
+}
+
+.nova-brand h2 {
+  margin: 0;
+
+  color: #f1f5f9;
+
+  font-size: 17px;
+
+  font-weight: 700;
+}
+
+
+.nova-brand span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #64748b;
+
+  font-size: 10px;
+}
+
+
+/* ==========================================
+   NEW CHAT
+========================================== */
+
+.new-chat-button {
+  width: calc(100% - 38px);
+
+  height: 42px;
+
+  margin: 5px 19px 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 12px;
+
+  border: 1px solid #334155;
+
+  border-radius: 8px;
+
+  background: #121824;
+
+  color: #e5e7eb;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.new-chat-button:hover {
+  background: #1a2230;
+
+  border-color: #4b5563;
+}
+
+
+.plus-icon {
+  font-size: 19px;
+
+  color: #a5b4fc;
+}
+
+
+/* ==========================================
+   HISTORY HEADER
+========================================== */
+
+.history-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 0 18px 10px;
+
+  color: #64748b;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.5px;
+}
+
+
+.chat-count {
+  width: 30px;
+  height: 28px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #1b2535;
+
+  color: #94a3b8;
+
+  font-size: 10px;
+}
+
+
+/* ==========================================
+   CHAT HISTORY
+========================================== */
+
+.chat-history {
+  flex: 1;
+
+  min-height: 0;
+
+  padding: 0 10px;
+
+  overflow-y: auto;
+}
+
+
+.chat-history::-webkit-scrollbar {
+  width: 4px;
+}
+
+
+.chat-history::-webkit-scrollbar-thumb {
+  background: #293548;
+
+  border-radius: 10px;
+}
+
+
+/* ==========================================
+   HISTORY ITEM
+========================================== */
+
+.history-item {
+  width: 100%;
+
+  min-height: 44px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 0 9px;
+
+  margin-bottom: 4px;
+
+  border-radius: 7px;
+
+  color: #9ca8ba;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.history-item:hover {
+  background: #151d2a;
+
+  color: #e2e8f0;
+}
+
+
+.history-item.active {
+  background: #1b2535;
+
+  color: #f1f5f9;
+}
+
+
+.history-icon {
+  width: 24px;
+
+  flex-shrink: 0;
+
+  font-size: 12px;
+}
+
+
+.history-title {
+  flex: 1;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+  font-size: 11px;
+}
+
+
+.delete-chat {
+  width: 26px;
+  height: 26px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: none;
+
+  border-radius: 5px;
+
+  background: transparent;
+
+  color: #64748b;
+
+  font-size: 11px;
+
+  cursor: pointer;
+
+  opacity: 0;
+
+  transition: 0.2s ease;
+}
+
+
+.history-item:hover
+.delete-chat,
+.history-item.active
+.delete-chat {
+  opacity: 1;
+}
+
+
+.delete-chat:hover {
+  background: #2a1820;
+
+  color: #ef4444;
+}
+
+
+/* ==========================================
+   BOTTOM
+========================================== */
+
+.sidebar-bottom {
+  flex-shrink: 0;
+
+  padding: 14px 19px;
+
+  border-top: 1px solid #202938;
+}
+
+
+.clear-button {
+  width: 100%;
+
+  height: 38px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 0 10px;
+
+  border: none;
+
+  border-radius: 7px;
+
+  background: #252f40;
+
+  color: #aab5c5;
+
+  font-size: 11px;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.clear-button:hover {
+  background: #2d394c;
+
+  color: #f1f5f9;
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 700px) {
+
+  .sidebar {
+    height: 180px;
+
+    min-height: 180px;
+  }
+
+
+  .sidebar-header {
+    padding: 10px 15px;
+  }
+
+
+  .new-chat-button {
+    margin: 0 15px 10px;
+
+    width: calc(100% - 30px);
+
+    height: 36px;
+  }
+
+
+  .history-header {
+    padding-bottom: 5px;
+  }
+
+
+  .sidebar-bottom {
+    display: none;
+  }
+
+}

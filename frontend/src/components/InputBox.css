@@ -1,0 +1,519 @@
+/* =====================================================
+   INPUT AREA
+===================================================== */
+
+.input-area {
+  width: 100%;
+
+  padding: 10px 18px 13px;
+
+  background: #080b12;
+
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
+   SELECTED FILE
+===================================================== */
+
+.selected-file {
+  width: 100%;
+  max-width: 900px;
+
+  margin: 0 auto 7px;
+
+  padding: 8px 10px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  box-sizing: border-box;
+
+  background: #111827;
+
+  border: 1px solid #29364a;
+
+  border-radius: 9px;
+}
+
+
+/* =====================================================
+   FILE LEFT
+===================================================== */
+
+.selected-file-left {
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+
+/* =====================================================
+   FILE ICON
+===================================================== */
+
+.selected-file-icon {
+  width: 31px;
+  height: 31px;
+
+  min-width: 31px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #1b2535;
+
+  border-radius: 7px;
+
+  font-size: 15px;
+}
+
+
+/* =====================================================
+   FILE INFO
+===================================================== */
+
+.selected-file-info {
+  min-width: 0;
+}
+
+
+.selected-file-name {
+  max-width: 550px;
+
+  color: #dce5ef;
+
+  font-size: 11px;
+
+  font-weight: 500;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+.selected-file-size {
+  margin-top: 2px;
+
+  color: #667891;
+
+  font-size: 8px;
+}
+
+
+/* =====================================================
+   REMOVE FILE
+===================================================== */
+
+.remove-file-btn {
+  width: 27px;
+  height: 27px;
+
+  min-width: 27px;
+
+  border: none;
+
+  border-radius: 6px;
+
+  background: transparent;
+
+  color: #8493a8;
+
+  font-size: 20px;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+
+.remove-file-btn:hover {
+  background: #2b1920;
+
+  color: #f87171;
+}
+
+
+.remove-file-btn:disabled {
+  opacity: 0.4;
+
+  cursor: not-allowed;
+}
+
+
+/* =====================================================
+   INPUT WRAPPER
+===================================================== */
+
+.input-wrapper {
+  width: 100%;
+  max-width: 900px;
+
+  min-height: 46px;
+
+  margin: 0 auto;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  box-sizing: border-box;
+
+  background: #111827;
+
+  border: 1px solid #29364a;
+
+  border-radius: 11px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.input-wrapper:focus-within {
+  border-color: #4f46e5;
+
+  box-shadow:
+    0 0 0 2px
+    rgba(79, 70, 229, 0.1);
+}
+
+
+/* =====================================================
+   ATTACH BUTTON
+===================================================== */
+
+.attach-btn {
+  width: 43px;
+  min-width: 43px;
+
+  height: 45px;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #8293aa;
+
+  font-size: 19px;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.attach-btn:hover {
+  color: #a5b4fc;
+
+  transform: scale(1.05);
+}
+
+
+.attach-btn:disabled {
+  opacity: 0.45;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+
+/* =====================================================
+   HIDDEN FILE INPUT
+===================================================== */
+
+.hidden-file-input {
+  display: none;
+}
+
+
+/* =====================================================
+   TEXTAREA
+===================================================== */
+
+.input-wrapper textarea {
+  flex: 1;
+
+  width: 100%;
+
+  min-width: 0;
+
+  min-height: 44px;
+
+  max-height: 150px;
+
+  padding: 11px 4px;
+
+  margin: 0;
+
+  resize: none;
+
+  overflow-y: auto;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #e2e8f0;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  line-height: 20px;
+
+  box-sizing: border-box;
+}
+
+
+.input-wrapper textarea::placeholder {
+  color: #62738b;
+}
+
+
+.input-wrapper textarea:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+}
+
+
+.input-wrapper textarea::-webkit-scrollbar {
+  width: 4px;
+}
+
+
+.input-wrapper textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.input-wrapper textarea::-webkit-scrollbar-thumb {
+  background: #303b4d;
+
+  border-radius: 10px;
+}
+
+
+/* =====================================================
+   SEND BUTTON
+===================================================== */
+
+.send-btn {
+  width: 38px;
+  height: 38px;
+
+  min-width: 38px;
+
+  margin: 4px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #293449;
+
+  color: #7e8fa7;
+
+  font-size: 16px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.send-btn:not(:disabled) {
+  background: #4f46e5;
+
+  color: #ffffff;
+
+  box-shadow:
+    0 3px 10px
+    rgba(79, 70, 229, 0.2);
+}
+
+
+.send-btn:not(:disabled):hover {
+  background: #5b52ef;
+
+  transform: translateY(-1px);
+}
+
+
+.send-btn:disabled {
+  background: #293449;
+
+  color: #62738b;
+
+  cursor: not-allowed;
+
+  opacity: 0.7;
+}
+
+
+/* =====================================================
+   BOTTOM
+===================================================== */
+
+.input-bottom {
+  width: 100%;
+  max-width: 900px;
+
+  margin: 5px auto 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+
+/* =====================================================
+   FILE TYPES
+===================================================== */
+
+.file-types {
+  display: flex;
+
+  align-items: center;
+
+  gap: 4px;
+}
+
+
+.file-types span {
+  padding: 3px 5px;
+
+  border: 1px solid #273449;
+
+  border-radius: 4px;
+
+  background: #0d121c;
+
+  color: #63748b;
+
+  font-size: 7px;
+
+  line-height: 1;
+}
+
+
+/* =====================================================
+   KEYBOARD HINT
+===================================================== */
+
+.keyboard-hint {
+  color: #53647b;
+
+  font-size: 7px;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .input-area {
+    padding:
+      8px 10px 10px;
+  }
+
+
+  .selected-file-name {
+    max-width: 250px;
+  }
+
+
+  .keyboard-hint {
+    display: none;
+  }
+
+
+  .input-bottom {
+    justify-content: flex-start;
+  }
+
+
+  .input-wrapper {
+    border-radius: 9px;
+  }
+
+
+  .attach-btn {
+    width: 38px;
+    min-width: 38px;
+  }
+
+
+  .send-btn {
+    width: 36px;
+    height: 36px;
+
+    min-width: 36px;
+  }
+
+}
+
+
+@media (max-width: 400px) {
+
+  .file-types span:nth-child(n + 4) {
+    display: none;
+  }
+
+}

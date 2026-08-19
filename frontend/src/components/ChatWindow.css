@@ -1,0 +1,714 @@
+/* =====================================================
+   CHAT WINDOW
+===================================================== */
+
+.chat-window {
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #080b12;
+  color: #e5e7eb;
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.chat-header {
+  height: 58px;
+  min-height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 18px;
+
+  background: #090d15;
+
+  border-bottom: 1px solid #202a3a;
+
+  box-sizing: border-box;
+}
+
+
+.chat-header-left {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+/* =====================================================
+   NOVA HEADER ICON
+===================================================== */
+
+.nova-header-icon {
+  width: 38px;
+  height: 38px;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #4f46e5;
+
+  flex-shrink: 0;
+}
+
+
+.nova-header-icon img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* =====================================================
+   NOVA HEADER TEXT
+===================================================== */
+
+.nova-header-info {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1px;
+}
+
+
+.nova-header-info h1 {
+  margin: 0;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #f1f5f9;
+}
+
+
+.nova-header-info span {
+  font-size: 9px;
+
+  color: #718096;
+}
+
+
+/* =====================================================
+   ONLINE STATUS
+===================================================== */
+
+.online-status {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: #8da0b8;
+
+  font-size: 10px;
+}
+
+
+.online-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  box-shadow:
+    0 0 7px
+    rgba(34, 197, 94, 0.7);
+}
+
+
+/* =====================================================
+   MESSAGES AREA
+===================================================== */
+
+.messages-area {
+  flex: 1;
+
+  width: 100%;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 24px 28px 20px;
+
+  box-sizing: border-box;
+
+  scroll-behavior: smooth;
+}
+
+
+/* Scrollbar */
+
+.messages-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+
+.messages-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.messages-area::-webkit-scrollbar-thumb {
+  background: #202b3d;
+
+  border-radius: 10px;
+}
+
+
+.messages-area::-webkit-scrollbar-thumb:hover {
+  background: #2e3b50;
+}
+
+
+/* =====================================================
+   WELCOME SCREEN
+===================================================== */
+
+.welcome-screen {
+  width: 100%;
+  max-width: 650px;
+
+  margin: auto;
+
+  min-height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
+   WELCOME ICON
+===================================================== */
+
+.welcome-icon {
+  width: 62px;
+  height: 62px;
+
+  margin-bottom: 18px;
+
+  border-radius: 17px;
+
+  overflow: hidden;
+
+  background: #4f46e5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow:
+    0 0 35px
+    rgba(79, 70, 229, 0.18);
+}
+
+
+.welcome-icon img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* =====================================================
+   WELCOME TEXT
+===================================================== */
+
+.welcome-screen h2 {
+  margin: 0 0 8px;
+
+  color: #f1f5f9;
+
+  font-size: 23px;
+
+  font-weight: 600;
+}
+
+
+.welcome-screen p {
+  margin: 0;
+
+  color: #718096;
+
+  font-size: 12px;
+
+  line-height: 20px;
+}
+
+
+/* =====================================================
+   SUGGESTIONS
+===================================================== */
+
+.suggestion-list {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  margin-top: 18px;
+}
+
+
+.suggestion-list button {
+  border: 1px solid #29364a;
+
+  background: #111827;
+
+  color: #9aa9bd;
+
+  padding: 7px 11px;
+
+  border-radius: 7px;
+
+  font-size: 10px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+
+.suggestion-list button:hover {
+  background: #182235;
+
+  border-color: #3b4b66;
+
+  color: #e2e8f0;
+}
+
+
+/* =====================================================
+   MESSAGE ROW
+===================================================== */
+
+.message-row {
+  width: 100%;
+
+  display: flex;
+
+  gap: 10px;
+
+  margin-bottom: 22px;
+
+  box-sizing: border-box;
+}
+
+
+.assistant-row {
+  justify-content: flex-start;
+}
+
+
+.user-row {
+  justify-content: flex-end;
+}
+
+
+/* =====================================================
+   MESSAGE AVATAR
+===================================================== */
+
+.message-avatar {
+  width: 32px;
+  height: 32px;
+
+  min-width: 32px;
+
+  border-radius: 9px;
+
+  overflow: hidden;
+
+  background: #4f46e5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 2px;
+}
+
+
+.message-avatar img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* =====================================================
+   USER AVATAR
+===================================================== */
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+
+  min-width: 32px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #252f40;
+
+  color: #cbd5e1;
+
+  font-size: 9px;
+
+  margin-top: 2px;
+}
+
+
+/* =====================================================
+   MESSAGE CONTENT WRAPPER
+===================================================== */
+
+.message-content-wrapper {
+  max-width: min(75%, 760px);
+
+  min-width: 0;
+}
+
+
+/* =====================================================
+   MESSAGE NAME
+===================================================== */
+
+.message-name {
+  margin-bottom: 5px;
+
+  color: #7d8da4;
+
+  font-size: 9px;
+
+  padding-left: 3px;
+}
+
+
+/* =====================================================
+   MESSAGE BUBBLE
+===================================================== */
+
+.message-bubble {
+  border-radius: 10px;
+
+  padding: 12px 14px;
+
+  font-size: 12px;
+
+  line-height: 1.65;
+
+  box-sizing: border-box;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =====================================================
+   USER BUBBLE
+===================================================== */
+
+.user-bubble {
+  background: #4f46e5;
+
+  color: #ffffff;
+
+  border-bottom-right-radius: 4px;
+
+  box-shadow:
+    0 4px 15px
+    rgba(0, 0, 0, 0.15);
+}
+
+
+/* =====================================================
+   ASSISTANT BUBBLE
+===================================================== */
+
+.assistant-bubble {
+  background: #151c28;
+
+  color: #dbe3ed;
+
+  border: 1px solid #283448;
+
+  border-bottom-left-radius: 4px;
+}
+
+
+/* =====================================================
+   MESSAGE TEXT
+===================================================== */
+
+.message-text {
+  white-space: normal;
+
+  word-break: break-word;
+}
+
+
+/* =====================================================
+   USER FILE
+===================================================== */
+
+.message-file {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 8px;
+
+  margin-bottom: 8px;
+
+  background: rgba(0, 0, 0, 0.15);
+
+  border-radius: 7px;
+}
+
+
+.message-file-icon {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  border-radius: 6px;
+
+  font-size: 14px;
+}
+
+
+.message-file-info {
+  min-width: 0;
+}
+
+
+.message-file-name {
+  color: #ffffff;
+
+  font-size: 10px;
+
+  font-weight: 500;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+.message-file-type {
+  margin-top: 2px;
+
+  color: rgba(255, 255, 255, 0.6);
+
+  font-size: 8px;
+}
+
+
+/* =====================================================
+   MESSAGE ACTIONS
+===================================================== */
+
+.message-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 5px;
+
+  padding-left: 3px;
+}
+
+
+.message-actions button {
+  border: none;
+
+  padding: 0;
+
+  background: transparent;
+
+  color: #667891;
+
+  font-size: 9px;
+
+  cursor: pointer;
+}
+
+
+.message-actions button:hover {
+  color: #a5b4fc;
+}
+
+
+.response-time {
+  color: #64748b;
+
+  font-size: 9px;
+}
+
+
+/* =====================================================
+   LOADING BUBBLE
+===================================================== */
+
+.loading-bubble {
+  display: flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  width: 60px;
+
+  min-height: 38px;
+}
+
+
+.typing-dot {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #8997ab;
+
+  animation: typing 1.2s infinite ease-in-out;
+}
+
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+
+@keyframes typing {
+
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+
+}
+
+
+/* =====================================================
+   END
+===================================================== */
+
+.messages-end {
+  height: 1px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 800px) {
+
+  .messages-area {
+    padding: 18px 15px;
+  }
+
+
+  .message-content-wrapper {
+    max-width: 82%;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .chat-header {
+    padding: 0 12px;
+  }
+
+
+  .online-status {
+    font-size: 9px;
+  }
+
+
+  .message-content-wrapper {
+    max-width: 88%;
+  }
+
+
+  .message-bubble {
+    font-size: 11px;
+
+    padding: 10px 12px;
+  }
+
+
+  .welcome-screen h2 {
+    font-size: 20px;
+  }
+
+
+  .suggestion-list button {
+    font-size: 9px;
+  }
+
+}
