@@ -30,19 +30,13 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 # Files remain available while backend is running
 FILE_STORE = {}
 
-# =========================
 # GROQ CLIENT
-# =========================
-
 client = None
 
 if GROQ_API_KEY:
     client = Groq(api_key=GROQ_API_KEY)
 
-# =========================
 # FASTAPI
-# =========================
-
 app = FastAPI(
     title="Nova AI Chatboard",
     version="3.0"
@@ -52,27 +46,22 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "http://127.0.0.1:5173"
+        "http://127.0.0.1:5173",
+        "https://ai-chartboard2.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
 )
 
-# =========================
 # REQUEST MODEL
-# =========================
-
 class ChatRequest(BaseModel):
     message: str = ""
     file_id: Optional[str] = None
     context: Optional[str] = ""
     history: Optional[list] = []
 
-# =========================
 # CLEAN AI RESPONSE
-# =========================
-
 def clean_response(text):
     if not text:
         return ""
@@ -105,10 +94,7 @@ def clean_response(text):
 
     return text.strip()
 
-# =========================
 # PDF TEXT
-# =========================
-
 def extract_pdf(path):
     try:
         import pymupdf
@@ -129,10 +115,7 @@ def extract_pdf(path):
         print("PDF ERROR:", repr(e))
         return ""
 
-# =========================
 # DOCX TEXT
-# =========================
-
 def extract_docx(path):
     try:
         from docx import Document
@@ -152,10 +135,7 @@ def extract_docx(path):
         print("DOCX ERROR:", repr(e))
         return ""
 
-# =========================
 # DOC TEXT
-# =========================
-
 def extract_doc(path):
     try:
         import subprocess
@@ -175,10 +155,7 @@ def extract_doc(path):
 
     return ""
 
-# =========================
 # TXT TEXT
-# =========================
-
 def extract_txt(path):
     try:
         return path.read_text(
@@ -190,10 +167,7 @@ def extract_txt(path):
         print("TXT ERROR:", repr(e))
         return ""
 
-# =========================
 # FILE CONTENT
-# =========================
-
 def extract_file_content(path, content_type, filename):
     extension = Path(filename).suffix.lower()
 
@@ -214,10 +188,7 @@ def extract_file_content(path, content_type, filename):
 
     return ""
 
-# =========================
 # LIMIT CONTEXT
-# =========================
-
 def limit_context(text, maximum=50000):
     if not text:
         return ""
@@ -230,10 +201,7 @@ def limit_context(text, maximum=50000):
         + "\n\n[Remaining file content omitted]"
     )
 
-# =========================
 # IMAGE OPTIMIZATION
-# =========================
-
 def prepare_image(path):
     """
     Groq base64 image requests have a smaller encoded-size limit.
@@ -300,10 +268,7 @@ def prepare_image(path):
         print("IMAGE OPTIMIZATION ERROR:", repr(e))
         return path
 
-# =========================
 # IMAGE TO BASE64
-# =========================
-
 def image_to_data_url(path):
     optimized_path = prepare_image(path)
 
@@ -315,10 +280,7 @@ def image_to_data_url(path):
         f"data:image/jpeg;base64,{encoded}"
     )
 
-# =========================
 # SYSTEM PROMPT
-# =========================
-
 def build_system_prompt(filename="", file_context=""):
     prompt = """
 You are Nova, a helpful AI assistant.
@@ -361,10 +323,7 @@ Use this content whenever the user's question is related to the file.
 
     return prompt.strip()
 
-# =========================
 # HISTORY
-# =========================
-
 def build_history(history):
     if not history:
         return []
@@ -391,10 +350,7 @@ def build_history(history):
 
     return messages
 
-# =========================
 # ROOT
-# =========================
-
 @app.get("/")
 async def root():
     return {
@@ -403,10 +359,7 @@ async def root():
         "model": MODEL
     }
 
-# =========================
 # HEALTH
-# =========================
-
 @app.get("/health")
 async def health():
     return {
@@ -415,10 +368,7 @@ async def health():
         "model": MODEL
     }
 
-# =========================
 # UPLOAD
-# =========================
-
 @app.post("/api/upload")
 async def upload_file(
     file: UploadFile = File(...)
@@ -509,10 +459,7 @@ async def upload_file(
         "message": "File uploaded successfully."
     }
 
-# =========================
 # FILE INFO
-# =========================
-
 @app.get("/api/file/{file_id}")
 async def get_file(file_id: str):
     data = FILE_STORE.get(file_id)
@@ -532,10 +479,7 @@ async def get_file(file_id: str):
         "text": data["text"]
     }
 
-# =========================
 # DELETE FILE
-# =========================
-
 @app.delete("/api/file/{file_id}")
 async def delete_file(file_id: str):
     data = FILE_STORE.get(file_id)
@@ -569,10 +513,7 @@ async def delete_file(file_id: str):
         "message": "File deleted successfully."
     }
 
-# =========================
 # CHAT
-# =========================
-
 @app.post("/api/chat")
 async def chat(request: ChatRequest):
     start_time = time.perf_counter()
@@ -592,10 +533,7 @@ async def chat(request: ChatRequest):
     file_context = request.context or ""
     stored_file = None
 
-    # -------------------------
     # GET EXISTING FILE
-    # -------------------------
-
     if request.file_id:
         stored_file = FILE_STORE.get(
             request.file_id
@@ -615,11 +553,7 @@ async def chat(request: ChatRequest):
         filename,
         file_context
     )
-
-    # -------------------------
     # IMAGE
-    # -------------------------
-
     is_image = False
 
     if stored_file:
@@ -627,10 +561,7 @@ async def chat(request: ChatRequest):
             "image/"
         )
 
-    # -------------------------
     # IMAGE CHAT
-    # -------------------------
-
     if is_image:
         try:
             image_path = Path(
@@ -701,10 +632,7 @@ async def chat(request: ChatRequest):
                 detail=f"Image analysis failed: {str(e)}"
             )
 
-    # -------------------------
     # TEXT / PDF / DOC
-    # -------------------------
-
     else:
         messages = [
             {
@@ -765,10 +693,7 @@ async def chat(request: ChatRequest):
                 detail=f"AI request failed: {str(e)}"
             )
 
-    # -------------------------
     # CLEAN ANSWER
-    # -------------------------
-
     answer = clean_response(answer)
 
     if not answer:
@@ -799,10 +724,7 @@ async def chat(request: ChatRequest):
         "file_name": filename
     }
 
-# =========================
 # STARTUP
-# =========================
-
 print("")
 print("======================================")
 print(" NOVA AI CHATBOARD BACKEND")
