@@ -1,97 +1,72 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./InputBox.css";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = (import.meta.env.VITE_API_URL || "")
+  .trim()
+  .replace(/\/+$/, "");
 
 const formatFileSize = (bytes) => {
   if (!bytes) return "";
-
-  if (bytes < 1024) {
-    return `${bytes} B`;
-  }
-
-  if (bytes < 1024 * 1024) {
-    return `${(bytes / 1024).toFixed(1)} KB`;
-  }
-
-  return `${(
-    bytes /
-    (1024 * 1024)
-  ).toFixed(1)} MB`;
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-function InputBox({
-  chat,
-  updateChat,
-  isLoading,
-  setIsLoading,
-}) {
+function InputBox({ chat, updateChat, isLoading, setIsLoading }) {
   const [message, setMessage] = useState("");
   const [uploading, setUploading] = useState(false);
-
   const fileInputRef = useRef(null);
   const textareaRef = useRef(null);
-
-  // ====================================================
-  // SUGGESTION BUTTON CONNECTION
-  // ====================================================
+  const chatRef = useRef(chat);
+  const loadingRef = useRef(isLoading);
 
   useEffect(() => {
-    const handleSuggestion = (event) => {
-      const suggestedMessage =
-        event.detail?.message;
+    chatRef.current = chat;
+  }, [chat]);
 
-      if (!suggestedMessage || isLoading) {
-        return;
-      }
+  useEffect(() => {
+    loadingRef.current = isLoading;
+  }, [isLoading]);
 
-      sendMessage(suggestedMessage);
-    };
+  const getApiUrl = () => {
+    if (!API_URL) {
+      alert("VITE_API_URL is missing. Please check your .env file and restart Vite.");
+      console.error("Missing VITE_API_URL environment variable.");
+      return null;
+    }
+    return API_URL;
+  };
 
-    window.addEventListener(
-      "nova-suggestion",
-      handleSuggestion
-    );
+  const handleSuggestion = (event) => {
+    const suggestedMessage = event.detail?.message;
+    if (!suggestedMessage || loadingRef.current) return;
+    sendMessage(suggestedMessage);
+  };
 
+  useEffect(() => {
+    window.addEventListener("nova-suggestion", handleSuggestion);
     return () => {
-      window.removeEventListener(
-        "nova-suggestion",
-        handleSuggestion
-      );
+      window.removeEventListener("nova-suggestion", handleSuggestion);
     };
-  }, [chat, isLoading]);
-
-  // ====================================================
-  // OPEN FILE SELECTOR
-  // ====================================================
+  }, []);
 
   const openFileSelector = () => {
     fileInputRef.current?.click();
   };
 
-  // ====================================================
-  // FILE UPLOAD
-  // ====================================================
-
   const handleFileChange = async (event) => {
-    const file =
-      event.target.files?.[0];
-
+    const file = event.target.files?.[0];
     if (!file) return;
 
-    const maxSize =
-      20 * 1024 * 1024;
+    const api = getApiUrl();
+    if (!api) {
+      event.target.value = "";
+      return;
+    }
 
-    if (file.size > maxSize) {
-      alert(
-        "File size must be less than 20 MB."
-      );
-
+    if (file.size > 20 * 1024 * 1024) {
+      alert("File size must be less than 20 MB.");
       event.target.value = "";
       return;
     }
@@ -100,185 +75,113 @@ function InputBox({
 
     try {
       const formData = new FormData();
-
       formData.append("file", file);
 
-      const response =
-        await axios.post(
-          `${API_URL}/api/upload`,
-          formData,
-          {
-            headers: {
-              "Content-Type":
-                "multipart/form-data",
-            },
-          }
-        );
-
+      const response = await axios.post(`${api}/api/upload`, formData);
       const data = response.data;
 
-      if (
-        data.success ||
-        data.file_id
-      ) {
-        updateChat({
-          ...chat,
-          fileName:
-            data.filename ||
-            file.name,
-          fileContext:
-            data.text ||
-            data.file_context ||
-            "",
-          fileId:
-            data.file_id ||
-            null,
-          fileType:
-            data.file_type ||
-            file.type,
-          fileSize:
-            data.size ||
-            file.size,
-        });
+      if (data.success || data.file_id) {
+        const updatedChat = {
+          ...chatRef.current,
+          fileName: data.filename || file.name,
+          fileContext: data.text || data.file_context || "",
+          fileId: data.file_id || null,
+          fileType: data.file_type || file.type,
+          fileSize: data.size || file.size,
+        };
+
+        chatRef.current = updatedChat;
+        updateChat(updatedChat);
       } else {
         alert("File upload failed.");
       }
     } catch (error) {
-      console.error(
-        "UPLOAD ERROR:",
-        error
-      );
-
-      const errorMessage =
+      console.error("UPLOAD ERROR:", error);
+      alert(
         error.response?.data?.detail ||
         error.response?.data?.message ||
-        "File upload failed.";
-
-      alert(errorMessage);
+        "File upload failed. Check your backend URL and server."
+      );
     } finally {
       setUploading(false);
       event.target.value = "";
     }
   };
 
-  // ====================================================
-  // REMOVE FILE
-  // ====================================================
-
   const removeFile = () => {
-    updateChat({
-      ...chat,
+    const updatedChat = {
+      ...chatRef.current,
       fileName: "",
       fileContext: "",
       fileId: null,
       fileType: "",
       fileSize: 0,
-    });
+    };
+
+    chatRef.current = updatedChat;
+    updateChat(updatedChat);
   };
 
-  // ====================================================
-  // SEND MESSAGE
-  // ====================================================
+  const sendMessage = async (suggestedText = null) => {
+    const api = getApiUrl();
+    if (!api || loadingRef.current) return;
 
-  const sendMessage = async (
-    suggestedText = null
-  ) => {
+    const currentChat = chatRef.current;
     const text =
       suggestedText !== null
-        ? suggestedText.trim()
+        ? String(suggestedText).trim()
         : message.trim();
 
-    if (
-      !text &&
-      !chat.fileId
-    ) {
-      return;
-    }
+    if (!text && !currentChat.fileId) return;
 
-    if (isLoading) {
-      return;
-    }
+    const finalMessage = text || "Please analyze this file.";
 
     const userMessage = {
-      id:
-        Date.now() +
-        Math.random(),
-
+      id: Date.now() + Math.random(),
       role: "user",
-
-      content:
-        text ||
-        "Please analyze this file.",
-
-      file: chat.fileId
+      content: finalMessage,
+      file: currentChat.fileId
         ? {
-            filename:
-              chat.fileName,
-
-            file_type:
-              chat.fileType,
-
-            size:
-              chat.fileSize,
+            filename: currentChat.fileName,
+            file_type: currentChat.fileType,
+            size: currentChat.fileSize,
           }
         : null,
     };
 
-    const updatedMessages = [
-      ...(chat.messages || []),
-      userMessage,
-    ];
+    const previousMessages = currentChat.messages || [];
+    const updatedMessages = [...previousMessages, userMessage];
 
-    updateChat({
-      ...chat,
+    const chatWithUserMessage = {
+      ...currentChat,
       messages: updatedMessages,
-    });
+    };
 
+    chatRef.current = chatWithUserMessage;
+    updateChat(chatWithUserMessage);
     setMessage("");
 
     if (textareaRef.current) {
-      textareaRef.current.style.height =
-        "auto";
+      textareaRef.current.style.height = "auto";
     }
 
+    loadingRef.current = true;
     setIsLoading(true);
 
-    const startTime =
-      performance.now();
+    const startTime = performance.now();
 
     try {
-      const response =
-        await axios.post(
-          `${API_URL}/api/chat`,
-          {
-            message:
-              text ||
-              "Please analyze this file.",
+      const response = await axios.post(`${api}/api/chat`, {
+        message: finalMessage,
+        file_id: currentChat.fileId || null,
+        context: currentChat.fileContext || "",
+        history: previousMessages.map((item) => ({
+          role: item.role,
+          content: item.content,
+        })),
+      });
 
-            file_id:
-              chat.fileId ||
-              null,
-
-            context:
-              chat.fileContext ||
-              "",
-
-            history:
-              (chat.messages || []).map(
-                (item) => ({
-                  role: item.role,
-                  content:
-                    item.content,
-                })
-              ),
-          }
-        );
-
-      const endTime =
-        performance.now();
-
-      const responseTime =
-        (endTime - startTime) / 1000;
+      const responseTime = (performance.now() - startTime) / 1000;
 
       let reply =
         response.data?.reply ||
@@ -286,180 +189,93 @@ function InputBox({
         response.data?.answer ||
         "";
 
-      reply = String(reply);
-
-      reply = reply.replace(
-        /<think>[\s\S]*?<\/think>/gi,
-        ""
-      );
-
-      reply = reply.replace(
-        /<think>[\s\S]*/gi,
-        ""
-      );
-
-      reply = reply.replace(
-        /\*\*\*/g,
-        ""
-      );
-
-      reply = reply.replace(
-        /\*\*/g,
-        ""
-      );
-
-      reply = reply.replace(
-        /```[\w-]*\n?/g,
-        ""
-      );
-
-      reply = reply.replace(
-        /```/g,
-        ""
-      );
-
-      reply = reply.trim();
+      reply = String(reply)
+        .replace(/<think>[\s\S]*?<\/think>/gi, "")
+        .replace(/<think>[\s\S]*/gi, "")
+        .replace(/\*\*/g, "")
+        .replace(/```[\w-]*\n?/g, "")
+        .trim();
 
       if (!reply) {
-        reply =
-          "I couldn't generate a response.";
+        reply = "I couldn't generate a response.";
       }
 
       const aiMessage = {
-        id:
-          Date.now() +
-          Math.random(),
-
+        id: Date.now() + Math.random(),
         role: "assistant",
-
         content: reply,
-
-        responseTime:
-          response.data?.responseTime ??
-          responseTime,
-
+        responseTime: response.data?.responseTime ?? responseTime,
         isError: false,
       };
 
-      updateChat({
-        ...chat,
+      const finalChat = {
+        ...chatWithUserMessage,
+        messages: [...updatedMessages, aiMessage],
+      };
 
-        messages: [
-          ...updatedMessages,
-          aiMessage,
-        ],
-      });
+      chatRef.current = finalChat;
+      updateChat(finalChat);
     } catch (error) {
-      console.error(
-        "CHAT ERROR:",
-        error
-      );
+      console.error("CHAT ERROR:", error);
 
-      const endTime =
-        performance.now();
-
-      const responseTime =
-        (endTime - startTime) / 1000;
+      const responseTime = (performance.now() - startTime) / 1000;
 
       const errorText =
         error.response?.data?.detail ||
         error.response?.data?.message ||
-        "Unable to connect with Nova AI server.";
+        (error.response
+          ? `Server error: ${error.response.status}`
+          : "Unable to connect to the AI server. Check your backend URL and server status.");
 
       const errorMessage = {
-        id:
-          Date.now() +
-          Math.random(),
-
+        id: Date.now() + Math.random(),
         role: "assistant",
-
         content: errorText,
-
         responseTime,
-
         isError: true,
       };
 
-      updateChat({
-        ...chat,
+      const finalChat = {
+        ...chatWithUserMessage,
+        messages: [...updatedMessages, errorMessage],
+      };
 
-        messages: [
-          ...updatedMessages,
-          errorMessage,
-        ],
-      });
+      chatRef.current = finalChat;
+      updateChat(finalChat);
     } finally {
+      loadingRef.current = false;
       setIsLoading(false);
     }
   };
 
-  // ====================================================
-  // KEYBOARD
-  // ====================================================
-
   const handleKeyDown = (event) => {
-    if (
-      event.key === "Enter" &&
-      !event.shiftKey
-    ) {
+    if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-
-      if (!isLoading) {
-        sendMessage();
-      }
+      if (!isLoading && !uploading) sendMessage();
     }
   };
-
-  // ====================================================
-  // TEXT CHANGE
-  // ====================================================
 
   const handleInput = (event) => {
     setMessage(event.target.value);
 
-    const textarea =
-      textareaRef.current;
-
+    const textarea = textareaRef.current;
     if (!textarea) return;
 
     textarea.style.height = "auto";
-
-    textarea.style.height =
-      `${Math.min(
-        textarea.scrollHeight,
-        150
-      )}px`;
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`;
   };
 
-  // ====================================================
-  // FILE ICON
-  // ====================================================
-
   const getFileIcon = () => {
-    const type =
-      chat.fileType || "";
+    const type = chat.fileType || "";
+    const name = chat.fileName?.toLowerCase() || "";
 
-    if (type.startsWith("image/")) {
-      return "🖼️";
-    }
-
-    if (
-      type.includes("pdf") ||
-      chat.fileName
-        ?.toLowerCase()
-        .endsWith(".pdf")
-    ) {
-      return "📕";
-    }
+    if (type.startsWith("image/")) return "🖼️";
+    if (type.includes("pdf") || name.endsWith(".pdf")) return "📕";
 
     if (
       type.includes("word") ||
-      chat.fileName
-        ?.toLowerCase()
-        .endsWith(".doc") ||
-      chat.fileName
-        ?.toLowerCase()
-        .endsWith(".docx")
+      name.endsWith(".doc") ||
+      name.endsWith(".docx")
     ) {
       return "📘";
     }
@@ -472,19 +288,11 @@ function InputBox({
       {chat.fileName && (
         <div className="selected-file">
           <div className="selected-file-left">
-            <div className="selected-file-icon">
-              {getFileIcon()}
-            </div>
-
+            <div className="selected-file-icon">{getFileIcon()}</div>
             <div className="selected-file-info">
-              <div className="selected-file-name">
-                {chat.fileName}
-              </div>
-
+              <div className="selected-file-name">{chat.fileName}</div>
               <div className="selected-file-size">
-                {formatFileSize(
-                  chat.fileSize
-                )}
+                {formatFileSize(chat.fileSize)}
               </div>
             </div>
           </div>
@@ -493,7 +301,7 @@ function InputBox({
             type="button"
             className="remove-file-btn"
             onClick={removeFile}
-            disabled={isLoading}
+            disabled={isLoading || uploading}
             title="Remove file"
           >
             ×
@@ -506,10 +314,7 @@ function InputBox({
           type="button"
           className="attach-btn"
           onClick={openFileSelector}
-          disabled={
-            uploading ||
-            isLoading
-          }
+          disabled={uploading || isLoading}
           title="Attach file"
         >
           📎
@@ -536,31 +341,21 @@ function InputBox({
               : "Message Nova..."
           }
           rows={1}
-          disabled={
-            uploading ||
-            isLoading
-          }
+          disabled={uploading || isLoading}
         />
 
         <button
           type="button"
           className="send-btn"
-          onClick={() =>
-            sendMessage()
-          }
+          onClick={() => sendMessage()}
           disabled={
             uploading ||
             isLoading ||
-            (
-              !message.trim() &&
-              !chat.fileId
-            )
+            (!message.trim() && !chat.fileId)
           }
           title="Send"
         >
-          {isLoading
-            ? "..."
-            : "➤"}
+          {isLoading ? "..." : "➤"}
         </button>
       </div>
 
@@ -574,8 +369,7 @@ function InputBox({
         </div>
 
         <div className="keyboard-hint">
-          Enter to send · Shift + Enter
-          for new line
+          Enter to send · Shift + Enter for new line
         </div>
       </div>
     </div>

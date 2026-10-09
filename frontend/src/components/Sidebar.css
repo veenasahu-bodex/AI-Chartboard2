@@ -1,15 +1,10 @@
 .sidebar {
   position: relative;
-
   display: flex;
   flex-direction: column;
-
   background: #0d121c;
-
   border-right: 1px solid #202938;
-
   color: #e5e7eb;
-
   overflow: hidden;
 }
 
@@ -20,11 +15,8 @@
 
 .sidebar-header {
   display: flex;
-
   align-items: center;
-
   gap: 11px;
-
   padding: 20px 18px;
 }
 
@@ -32,32 +24,23 @@
 .nova-logo-image {
   width: 42px;
   height: 42px;
-
   object-fit: contain;
-
   border-radius: 10px;
-
   flex-shrink: 0;
 }
 
 .nova-brand h2 {
   margin: 0;
-
   color: #f1f5f9;
-
   font-size: 17px;
-
   font-weight: 700;
 }
 
 
 .nova-brand span {
   display: block;
-
   margin-top: 3px;
-
   color: #64748b;
-
   font-size: 10px;
 }
 
@@ -68,33 +51,19 @@
 
 .new-chat-button {
   width: calc(100% - 38px);
-
   height: 42px;
-
   margin: 5px 19px 20px;
-
   display: flex;
-
   align-items: center;
-
   gap: 9px;
-
   padding: 0 12px;
-
   border: 1px solid #334155;
-
   border-radius: 8px;
-
   background: #121824;
-
   color: #e5e7eb;
-
   font-size: 12px;
-
   font-weight: 600;
-
   cursor: pointer;
-
   transition: 0.2s ease;
 }
 
